@@ -1,0 +1,42 @@
+/* src/sections/Philosophy.css */
+.philosophy-section {
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 2rem;
+  background-color: #2d3748; /* Dark blue-grey */
+  color: white;
+}
+.philosophy-content {
+  width: 100%;
+  max-width: 1200px;
+}
+.paths-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+.path-card {
+  flex: 1;
+  background-color: #4a5568; /* Slightly lighter than the background */
+  padding: 2rem;
+  border-radius: 10px;
+}
+.path-card h3 {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+}
+.path-card p {
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.section-title {
+  font-family: Georgia, serif;
+  color: white;           /* text color */
+  font-size: 2.5rem;      /* example font size */
+  margin-bottom: 1.2rem;    /* spacing below */
+  /* add other styles as needed */
+}

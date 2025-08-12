@@ -1,0 +1,43 @@
+/* src/sections/FeatureShowcase.css */
+.feature-showcase-section {
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 2rem;
+  background-color: #f7fafc;
+}
+.features-container {
+  display: flex;
+  gap: 2rem;
+  max-width: 1200px;
+}
+.feature-card {
+  flex: 1;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  overflow: hidden; /* To make sure the image respects the border radius */
+  text-align: center;
+}
+.feature-visual {
+  height: 250px;
+  background-size: cover;
+  background-position: center;
+}
+.feature-card h3 {
+  font-size: 1.5rem;
+  margin: 1.5rem 0 1rem 0;
+}
+.feature-card p {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+/* Images for the features */
+.feature-visual.wiki { background-image: url('https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=800'); }
+.feature-visual.nasa { background-image: url('https://images.unsplash.com/photo-1446776811953-b23d579212c5?w=800'); }
+.feature-visual.trivia { background-image: url('https://images.unsplash.com/photo-1599508704512-2f196281a175?w=800'); }

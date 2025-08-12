@@ -1,0 +1,61 @@
+/* src/sections/HowItWorks.css */
+
+/* The main section container that takes up the full width */
+.how-it-works-section {
+  min-height: 100vh;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 4rem 2rem; /* Add padding for spacing on smaller screens */
+  background-color: #f7fafc; /* Light grey background */
+
+  /* Use flexbox to easily center the content wrapper */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 
+  THIS IS THE MOST IMPORTANT PART.
+  This wrapper has a maximum width and is centered. It contains our two columns.
+  Because the columns are inside this container, they can't drift apart.
+*/
+.hiw-content-wrapper {
+  display: flex;
+  align-items: center; /* Vertically align items in the center */
+  gap: 3rem; /* The space between the text and the image */
+  width: 100%;
+  max-width: 1100px; /* Set a max width for the content area */
+}
+
+/* ---- Column 1: Text ---- */
+.hiw-text-content {
+  flex: 1; /* Allows the text column to take up available space */
+}
+
+.hiw-heading {
+  font-size: 2.8rem;
+  font-weight: bold;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  font-family: Georgia, serif; /* As per your example */
+  color: #1a202c;
+}
+
+.hiw-paragraph {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #4a5568; /* A softer grey for the paragraph text */
+}
+
+
+/* ---- Column 2: Image ---- */
+.hiw-image-content {
+  flex: 1; /* Allows the image column to take up available space */
+  height: 450px;
+  border-radius: 15px;
+  
+  /* Replace with a relevant image */
+  background-image: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800');
+  background-size: cover;
+  background-position: center;
+}
