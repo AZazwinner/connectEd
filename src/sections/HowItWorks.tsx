@@ -1,6 +1,7 @@
 // src/sections/HowItWorks.tsx
 import React from 'react';
 import './HowItWorks.css';
+import howItWorksUrl from '/HowItWorks.png';
 
 const HowItWorks: React.FC = () => {
   return (
@@ -19,9 +20,8 @@ const HowItWorks: React.FC = () => {
           </p>
         </div>
 
-        {/* Column 2: Image Content */}
-        <div className="hiw-image-content">
-          {/* The background image will be applied via CSS */}
+        <div className="hiw-image-container">
+          <img src={howItWorksUrl} alt="A diagram showing a central hub syncing to devices" />
         </div>
         
       </div>

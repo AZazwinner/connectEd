@@ -1,4 +1,7 @@
 /* src/sections/Hero.css */
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+
 .hero-section {
   height: 100vh;
   box-sizing: border-box;
@@ -6,30 +9,147 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 2rem;
-  background-color: #1a202c; /* Dark background */
-  color: white;
-  background-image: linear-gradient(rgba(26, 32, 44, 0.7), rgba(26, 32, 44, 0.7)), url('https://images.unsplash.com/photo-1542845084-399a9a35f3d7?w=1200');
+
   background-size: cover;
-  background-position: center;
-}
-.hero-content {
-  max-width: 800px;
-}
-.hero-content h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-.hero-content p {
-  font-size: 1.25rem;
-  opacity: 0.9;
-  margin-bottom: 2rem;
-}
-.hero-cta-button {
-  background-color: #3182ce;
+  background-position: center; /* Keeps background centered */
+
+  padding: 2rem;
+  background: linear-gradient(to bottom, #000000, #da84ff); /* Light grey gradient */
+
+  /* The background overlay and image remain the same */
   color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+}
+
+.hero-content {
+  /* 
+    This is the key fix. We use 'rem' for max-width.
+    This means the container's max width will shrink as the user zooms in.
+  */
+  max-width: 65rem; /* Approx 1040px at default font size */
+
+  /* 
+    We also add a percentage-based max-width to ensure it never
+    overflows the viewport, no matter what.
+  */
+  width: 95%; 
+}
+
+.hero-heading {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  /* 
+    clamp(MINIMUM_SIZE, PREFERRED_SIZE, MAXIMUM_SIZE)
+    - MINIMUM: 2rem (The smallest it can get on extreme zoom or tiny screens)
+    - PREFERRED: 5vw (It will try to be 5% of the viewport width)
+    - MAXIMUM: 4.2rem (It will not get bigger than this on huge screens)
+  */
+  font-size: clamp(1.5rem, 4vw, 3.5rem);
+
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* This now applies a BOLD font weight */
+.hero-heading .text-emphasis {
+  font-weight: bold; /* Standard bold */
+  color: #ffffff;
+}
+
+/* ---- Subtitle and Buttons (Mostly unchanged) ---- */
+.hero-subtitle {
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  font-weight: 400;
+  max-width: 40rem;
+  margin: 0 auto 2.5rem auto;
+  line-height: 1.6;
+  opacity: 0.85; /* Slightly less opaque for better contrast with the heading */
+}
+.hero-button-group {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* --- Unified Button Style --- */
+.hero-button {
+  position: relative; /* Needed for the pseudo-element */
+  display: inline-block;
+  padding: 1rem 2rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 500;
   text-decoration: none;
-  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  /* Initial State */
+  color: #ffffff !important;
+  background-color: rgba(30, 30, 50, 0.5); /* Slightly darker initial state */
+  overflow: hidden; /* Important: Hides the gradient that is outside the border */
+}
+
+/* We put the text in a span to keep it on top of the gradient */
+.hero-button span {
+  position: relative;
+  z-index: 1;
+}
+
+/* The pseudo-element that will hold our gradient */
+.hero-button::before {
+  content: '';
+  position: absolute;
+  left: var(--mouse-x);
+  top: var(--mouse-y);
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle closest-side, #8a2be2, transparent);
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease, height 0.2s ease;
+  z-index: 0;
+}
+
+/* --- Hover State for BOTH buttons --- */
+.hero-button:hover::before {
+  width: 200px; /* Make the gradient effect large on hover */
+  height: 200px;
+}
+
+.hero-button:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+
+  .hero-section {
+    min-height: 100vh;
+    height: auto;
+  }
+
+  /* Reduce the heading size for readability */
+  .hero-heading {
+    font-size: 2.5rem;
+    line-height: 1.3;
+  }
+
+  /* Reduce the subtitle size */
+  .hero-subtitle {
+    font-size: 1rem;
+    max-width: 90%; /* Allow it to take up more of the screen width */
+  }
+
+  /* 
+    This keeps the buttons side-by-side but allows them to wrap 
+    if the screen gets extremely narrow. 'center' keeps them centered.
+  */
+  .hero-button-group {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* Reduce button padding and font size for a tighter look */
+  .hero-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+  }
 }

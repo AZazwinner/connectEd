@@ -2,10 +2,10 @@
 
 // Import all the static sections
 import Hero from './sections/Hero';
-import HowItWorks from './sections/HowItWorks.tsx';
-import Philosophy from './sections/Philosophy.tsx';
-import FeatureShowcase from './sections/FeatureShowcase.tsx';
-import CallToAction from './sections/CallToAction.tsx';
+import HowItWorks from './sections/HowItWorks';
+import Philosophy from './sections/Philosophy';
+import Mission from './sections/Mission';
+import CallToAction from './sections/CallToAction';
 
 // Global styles
 import './App.css';
@@ -16,7 +16,7 @@ function App() {
       <Hero />
       <HowItWorks />
       <Philosophy />
-      <FeatureShowcase />
+      <Mission />
       <CallToAction />
     </main>
   );

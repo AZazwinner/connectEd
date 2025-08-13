@@ -1,13 +1,15 @@
 /* src/sections/CallToAction.css */
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+
 .cta-section {
-  min-height: 70vh;
   box-sizing: border-box;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 4rem 2rem;
+  padding: 4rem 1rem;
   background-color: #1a202c;
   color: white;
 }
@@ -21,15 +23,196 @@
   line-height: 1.6;
   margin-bottom: 2rem;
 }
+
 .cta-buttons {
   display: flex;
-  gap: 1rem;
+  justify-content: center;
 }
+
 .cta-button {
-  background-color: #3182ce;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
   text-decoration: none;
-  font-weight: bold;
+  font-size: 18px;
+  padding: 23px 33px;
+  
+  /* This is crucial for establishing the layering context */
+  position: relative; 
+  
+  /* We remove the background and border from the button itself */
+  background-color: transparent;
+  border: none;
+  
+  /* Initial text color */
+  color: rgba(230, 230, 230, 0.7);
+  
+  transition: color 0.5s, transform 0.2s;
+  outline: none;
+}
+
+.cta-button:active {
+  transform: translateY(3px);
+}
+
+/* 
+  The text now lives in its own layer on top of everything else.
+*/
+.button-text {
+  position: relative;
+  z-index: 2;
+}
+
+/* This is the base for BOTH border pseudo-elements */
+.cta-button::after, .cta-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+  box-sizing: border-box; /* Ensures border size is included correctly */
+}
+
+/* Layer 1: The initial border */
+.cta-button::before {
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  transition: opacity 0.3s;
+  z-index: 1; /* Sits just below the text */
+}
+
+/* Layer 0: The shrinking border (starts hidden) */
+.cta-button::after {
+  border: 3px solid #e6e6e6;
+  opacity: 0;
+  transform: scaleX(1.1) scaleY(1.3);
+  transition: transform 0.3s, opacity 0.3s;
+  z-index: 0; /* Sits at the very bottom of the stack */
+}
+
+
+/* --- HOVER STATE --- */
+
+.cta-button:hover {
+  color: #e6e6e6;
+}
+
+/* On hover, fade out the initial border */
+.cta-button:hover::before {
+  opacity: 0;
+}
+
+/* On hover, fade in the new border and shrink it to size */
+.cta-button:hover::after {
+  opacity: 1;
+  transform: scaleX(1) scaleY(1);
+}
+
+
+.tech-footer {
+  /* Add significant space between the buttons and this footer text */
+  margin-top: 5rem; 
+  /* A subtle line to visually separate the footer */
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1.5rem;
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+}
+
+.tech-footer p {
+  font-size: 0.9rem;
+  /* Make the base text color muted to let the keywords stand out */
+  color: rgba(255, 255, 255, 0.5);
+  display: inline-block;
+}
+
+/* --- Base style for all keywords --- */
+.tech-keyword {
+  font-weight: 600;
+  /* Set a base color for the keywords */
+  color: #a7c1dd; 
+  /* The smooth transition is key */
+  transition: text-shadow 0.3s ease, color 0.3s ease;
+  padding: 0 0.2rem;
+  cursor: default;
+}
+
+.tech-keyword:hover {
+  color: #fff; /* Make the text bright white on hover */
+  /* This creates the multi-layered glow */
+  text-shadow:
+    0 0 7px currentColor,
+    0 0 10px currentColor,
+    0 0 21px currentColor;
+}
+
+.tech-keyword.python:hover {
+  color: #ffd43b; /* The bright yellow from Python's logo */
+  text-shadow:
+    0 0 8px #ffd43b,
+    0 0 16px #ffd43b;
+}
+
+/* --- React Styles --- */
+.tech-keyword.react:hover {
+  color: #61dafb; /* React's brand blue */
+  text-shadow:
+    0 0 8px #61dafb,
+    0 0 16px #61dafb;
+}
+
+/* --- TypeScript Styles --- */
+.tech-keyword.typescript:hover {
+  color: #3178c6; /* TypeScript's brand blue */
+  text-shadow:
+    0 0 8px #3178c6,
+    0 0 16px #3178c6;
+}
+
+/* --- VS Code Styles --- */
+.tech-keyword.vscode:hover {
+  color: #007acc; /* VS Code's brand blue */
+  text-shadow:
+    0 0 8px #007acc,
+    0 0 16px #007acc;
+}
+
+@media (max-width: 768px) {
+  /* Reduce the vertical padding on mobile to save space */
+  .cta-section {
+    padding: 4rem 1rem;
+  }
+
+  /* Adjust font sizes */
+  .cta-section h2 {
+    font-size: 2rem;
+  }
+  .cta-section p {
+    font-size: 1rem;
+  }
+
+  /* 
+    This is the key for the buttons:
+    Stack them vertically and make them take up more width.
+  */
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center; /* Center the buttons in the column */
+    width: 100%;
+    gap: 1rem;
+  }
+  
+  .cta-button {
+    /* Make the buttons wider for easier tapping */
+    width: 80%;
+    max-width: 350px;
+  }
+
+  /* Adjust footer text size for mobile */
+  .tech-footer p {
+    font-size: 0.8rem;
+    /* Use padding to ensure text doesn't touch the screen edges */
+    padding: 0 1rem; 
+  }
 }
