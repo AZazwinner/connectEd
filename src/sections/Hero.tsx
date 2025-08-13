@@ -42,23 +42,29 @@ const Hero: React.FC = () => {
   return (
     <section className="hero-section" id="hero">
       <div className="hero-content">
-        <h1 className="hero-heading">
-          Quality Education, 
-          <br/>
-          designed to work <span className="text-emphasis">offline</span> & <span className="text-emphasis">online</span>.
-        </h1>
-        
-        <p className="hero-subtitle">
-            Learn anytime, anywhere — bridging gaps with flexible access.
-        </p>
+        <div className="fade-in-up">
+            <h1 className="hero-heading">
+            Quality Education, 
+            <br/>
+            designed to work <span className="text-emphasis">offline</span> & <span className="text-emphasis">online</span>.
+            </h1>
+        </div>
 
-        <div className="hero-button-group">
-          <a href="#get-started" className="hero-button" ref={getStartedRef}>
-            <span>Get Started</span>
-          </a>
-          <a href="#learn-more" className="hero-button" ref={learnMoreRef}>
-            <span>Learn More</span>
-          </a>
+        <div className="fade-in-up">
+            <p className="hero-subtitle">
+                Learn anytime, anywhere — bridging gaps with flexible access.
+            </p>
+        </div>
+
+        <div className="fade-in-up">
+            <div className="hero-button-group">
+                <a href="#get-started" className="hero-button" ref={getStartedRef}>
+                    <span>Get Started</span>
+                </a>
+                <a href="#learn-more" className="hero-button" ref={learnMoreRef}>
+                    <span>Learn More</span>
+                </a>
+            </div>
         </div>
       </div>
     </section>

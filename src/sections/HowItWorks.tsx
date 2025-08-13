@@ -2,25 +2,32 @@
 import React from 'react';
 import './HowItWorks.css';
 import howItWorksUrl from '/HowItWorks.png';
+import { useIntersectionObserver } from '../hooks/useIntersectionObserver'; // Import the hook
 
 const HowItWorks: React.FC = () => {
+  // This part is perfect. You are correctly getting the ref and the visibility state.
+  const [sectionRef, isSectionVisible] = useIntersectionObserver<HTMLElement>();
+
   return (
-    <section className="how-it-works-section" id="how-it-works">
-      {/* 
-        This is the main content wrapper. It has a max-width and is centered.
-        This is the key to keeping the text and image "stuck together".
-      */}
+    // The ref is correctly attached here.
+    <section className="how-it-works-section" ref={sectionRef} id="how-it-works">
       <div className="hiw-content-wrapper">
 
-        {/* Column 1: Text Content */}
-        <div className="hiw-text-content">
+        {/* 
+          THIS IS THE FIX:
+          We use a template literal to build the className string.
+          - The 'hiw-text-content' class is always there.
+          - The 'animated-item' class is ONLY added if isSectionVisible is true.
+        */}
+        <div className={`hiw-text-content ${isSectionVisible ? 'animated-item' : ''}`}>
           <h2 className="hiw-heading">Learn Anywhere,<br/>Anytime. Offline.</h2>
           <p className="hiw-paragraph">
             Sync once, then access all lessons and challenges offline or online—flexible learning that fits your world.
           </p>
         </div>
 
-        <div className="hiw-image-container">
+        {/* Apply the same fix to the image container */}
+        <div className={`hiw-image-container ${isSectionVisible ? 'animated-item' : ''}`}>
           <img src={howItWorksUrl} alt="A diagram showing a central hub syncing to devices" />
         </div>
         
