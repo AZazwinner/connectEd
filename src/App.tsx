@@ -5,6 +5,8 @@ import Dashboard from './pages/Dashboard.tsx';
 import LevelDetailPage from './pages/LevelDetailPage';
 import WorkspacePage from './pages/WorkspacePage';
 import PlacementTestPage from './pages/PlacementTestPage';
+import TriviaPage from './pages/TriviaPage'; // <-- 1. Import new page
+import TriviaWorkspace from './pages/TriviaWorkspace';
 import './App.css';
 
 function App() {
@@ -15,6 +17,8 @@ function App() {
       <Route path="/math/:levelId" element={<LevelDetailPage />} />
       <Route path="/workspace/:levelId/:skillId" element={<WorkspacePage />} />
       <Route path="/placement-test/:targetLevelId" element={<PlacementTestPage />} />
+      <Route path="/trivia" element={<TriviaPage />} />
+      <Route path="/trivia/workspace" element={<TriviaWorkspace />} />
     </Routes>
   );
 }

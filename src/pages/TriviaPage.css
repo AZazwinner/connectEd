@@ -1,0 +1,84 @@
+/* Using the same warm, calm palette */
+.trivia-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background: linear-gradient(to bottom, #FBF8F3, #F9F3E9);
+}
+
+.trivia-config-card {
+  width: 100%;
+  max-width: 500px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.07);
+  border: 1px solid #e5e7eb;
+  padding: 2rem 2.5rem;
+}
+
+.trivia-card-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1.5rem;
+}
+.trivia-card-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #1f2937;
+}
+.trivia-card-header p {
+  margin: 0.5rem 0 0;
+  color: #4b5568;
+}
+
+.trivia-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.form-group select,
+.form-group input {
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
+}
+
+.start-quiz-button {
+  padding: 0.9rem;
+  margin-top: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #3b82f6; /* Consistent accent color */
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.start-quiz-button:hover {
+  background-color: #2563eb;
+  transform: translateY(-2px);
+}
+
+.error-message {
+  color: #ef4444;
+  text-align: center;
+}

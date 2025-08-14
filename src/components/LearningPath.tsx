@@ -1,31 +1,28 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import type { LearningPathData, Level } from '../dashboardData';
+import api from '../lib/api'; // <-- 1. Import the API helper
 
 // Import all necessary helpers
-import { countBankedQuestionsForLevel } from '../lib/database';
+import { countBankedQuestionsForLevel, savePlacementTest } from '../lib/database'; // <-- 2. Import savePlacementTest
 import { syncQuestionsForLevel } from '../lib/sync';
 import { getUnlockedLevel } from '../lib/progress';
-import Modal from './Modal'; // Import our custom Modal component
+import Modal from './Modal';
 
-// Import the component's stylesheets
+// Styles
 import './Modal.css'; 
 import './LearningPath.css';
 
-// --- CHILD COMPONENT: LevelCard ---
-// This component is now a simple "presentational" component. It receives all its data
-// and behavior from its parent, the LearningPath component.
+// --- CHILD COMPONENT: LevelCard (Unchanged) ---
 interface LevelCardProps {
   level: Level;
   isLocked: boolean;
   isSyncing: boolean;
-  onClick: () => void; // A function passed from the parent to be called on click
+  onClick: () => void;
 }
 
 const LevelCard: React.FC<LevelCardProps> = ({ level, isLocked, isSyncing, onClick }) => {
   return (
-    // We use a <div> instead of an <a> because the parent now controls all navigation.
-    // The onClick event now triggers the function passed down from the parent.
     <div onClick={onClick} className={`level-card-link ${isLocked ? 'locked' : ''}`}>
       <div className="level-card">
         {isLocked && <span className="lock-icon">🔒</span>}
@@ -37,81 +34,84 @@ const LevelCard: React.FC<LevelCardProps> = ({ level, isLocked, isSyncing, onCli
   );
 };
 
-
 // --- CHILD COMPONENT: TriviaConfigurator (Unchanged) ---
 const TriviaConfigurator: React.FC = () => (
-    <div className="trivia-config-container">
-        <div className="trivia-config-item">
-            <label htmlFor="topic">Topic</label>
-            <select id="topic" name="topic">
-                <option value="general">General Knowledge</option>
-                <option value="science">Science</option>
-                <option value="history">History</option>
-            </select>
-        </div>
-        <div className="trivia-config-item">
-            <label htmlFor="difficulty">Difficulty</label>
-            <select id="difficulty" name="difficulty">
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-            </select>
-        </div>
-        <button className="start-trivia-btn">Start Trivia</button>
-    </div>
+  <div className="trivia-config-container">
+    <Link to="/trivia" className="start-trivia-btn-link">
+      <button className="start-trivia-btn">Start Trivia Challenge</button>
+    </Link>
+  </div>
 );
 
 
 // --- PARENT COMPONENT: LearningPath ---
-// This component now contains all the state and logic for handling clicks,
-// showing modals, syncing data, and navigating.
 const LearningPath: React.FC<{ path: LearningPathData }> = ({ path }) => {
   const navigate = useNavigate();
   const scrollerRef = useRef<HTMLDivElement>(null);
 
-  // State to track which level (if any) is currently syncing data
   const [syncingLevelId, setSyncingLevelId] = useState<string | null>(null);
-
-  // State to control the placement test confirmation modal
+  
   const [modalInfo, setModalInfo] = useState({
     isOpen: false,
     targetLevelId: '',
     levelNumber: 0
   });
 
-  // This is the centralized click handler that now lives in the parent component.
+  // --- 3. Add new state to track loading WITHIN the modal ---
+  const [isModalLoading, setIsModalLoading] = useState(false);
+
+  // (handleLevelClick is unchanged)
   const handleLevelClick = async (level: Level, isLocked: boolean) => {
     const levelId = level.path.split('/').pop();
     if (!levelId) return;
 
     if (isLocked) {
-      // If the level is locked, we open the modal with the relevant info
       const levelNumber = parseInt(level.path.split('-')[1], 10);
       setModalInfo({ isOpen: true, targetLevelId: levelId, levelNumber: levelNumber });
-      return; // Stop here and wait for user input from the modal
+      return;
     }
 
-    // If the level is unlocked, we proceed with the offline data sync check
     const questionCount = await countBankedQuestionsForLevel(levelId);
     const SYNC_THRESHOLD = 50;
     if (questionCount < SYNC_THRESHOLD) {
-      setSyncingLevelId(levelId); // Update UI to show "Preparing..."
+      setSyncingLevelId(levelId);
       await syncQuestionsForLevel(levelId);
-      setSyncingLevelId(null); // Reset UI after sync is complete
+      setSyncingLevelId(null);
     }
     
-    // Finally, navigate to the level's detail page
     navigate(level.path);
   };
   
-  // This function is called when the user confirms they want to take the test
-  const handleConfirmPlacementTest = () => {
-    navigate(`/placement-test/${modalInfo.targetLevelId}`);
+  // --- This function is now correctly defined and integrated ---
+  const handleConfirmPlacementTest = async () => {
+    const levelId = modalInfo.targetLevelId;
+    
+    // Show a loading indicator to the user
+    setIsModalLoading(true); 
+
+    if (navigator.onLine) {
+        try {
+            // Fetch the test from the live API
+            const response = await api.get(`/math/placement-test/${levelId}`);
+            // Save the downloaded test to IndexedDB for offline use
+            await savePlacementTest(levelId, response.data);
+            console.log(`Placement test for ${levelId} fetched and cached.`);
+        } catch (error) {
+            alert("Could not download the placement test. Please try again.");
+            setIsModalLoading(false);
+            return; // Stop execution on error
+        }
+    }
+
+    // This part now runs after a successful download, or if the user was offline.
+    setIsModalLoading(false);
     setModalInfo({ isOpen: false, targetLevelId: '', levelNumber: 0 }); // Close the modal
+    navigate(`/placement-test/${levelId}`); // Navigate to the test page
   };
 
-  // This function is called to simply close the modal
   const handleCloseModal = () => {
+    // Also reset loading state when closing
+    setIsModalLoading(false);
     setModalInfo({ isOpen: false, targetLevelId: '', levelNumber: 0 });
   };
 
@@ -165,24 +165,32 @@ const LearningPath: React.FC<{ path: LearningPathData }> = ({ path }) => {
         )}
       </div>
 
-      {/* The Modal component is now rendered here, controlled by the parent's state */}
       <Modal
         isOpen={modalInfo.isOpen}
         onClose={handleCloseModal}
         title="Take a Placement Test?"
       >
-        <p>
-          This level is locked. To jump ahead, you can take a short placement test 
-          to unlock up to Level {modalInfo.levelNumber}.
-        </p>
-        <footer className="modal-footer">
-          <button className="modal-button secondary" onClick={handleCloseModal}>
-            Cancel
-          </button>
-          <button className="modal-button primary" onClick={handleConfirmPlacementTest}>
-            Start Test
-          </button>
-        </footer>
+        {/* --- 4. Add conditional rendering for the loading state --- */}
+        {isModalLoading ? (
+          <div className="modal-loading-state">
+            <div className="loading-spinner"></div>
+            <p>Downloading test...</p>
+          </div>
+        ) : (
+          <>
+            <p>
+              This level is locked. To jump ahead, you can download a short placement test to take now or later.
+            </p>
+            <footer className="modal-footer">
+              <button className="modal-button secondary" onClick={handleCloseModal} disabled={isModalLoading}>
+                Cancel
+              </button>
+              <button className="modal-button primary" onClick={handleConfirmPlacementTest} disabled={isModalLoading}>
+                {navigator.onLine ? 'Download Test' : 'Take Offline Test'}
+              </button>
+            </footer>
+          </>
+        )}
       </Modal>
     </div>
   );

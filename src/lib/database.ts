@@ -4,21 +4,38 @@ import { openDB } from 'idb';
 import type { DBSchema, IDBPDatabase } from 'idb';
 
 const DB_NAME = 'ConnectEdDB';
-const DB_VERSION = 1;
-const QUESTIONS_STORE = 'questions';
+// --- 1. INCREMENT THE DATABASE VERSION ---
+// Any time you change the structure (add stores or indexes), you MUST bump the version.
+const DB_VERSION = 2; 
 
-// Define the structure of our database using TypeScript
+// Define constants for our store names to avoid typos
+const QUESTIONS_STORE = 'questions';
+const PLACEMENT_TESTS_STORE = 'placementTests'; // New constant for clarity
+
+// --- 2. UPDATE THE DATABASE SCHEMA INTERFACE ---
+// Define the structure of our database, including the new store.
 interface ConnectEdDBSchema extends DBSchema {
+  // The existing questions store (unchanged)
   [QUESTIONS_STORE]: {
-    key: number; // The auto-incrementing primary key
+    key: number;
     value: {
-      questionId: string; // e.g., "place-value-16893849"
-      skillId: string;   // e.g., "place-value"
-      levelId: string;   // e.g., "level-1"
-      questionData: any; // The full question object from your API
+      questionId: string;
+      skillId: string;
+      levelId: string;
+      questionData: any;
       answeredCorrectly: boolean | null;
     };
     indexes: { 'by_level_and_skill': [string, string] };
+  };
+  
+  // --- This is the new definition for our placement tests store ---
+  [PLACEMENT_TESTS_STORE]: {
+    key: string; // The key will be the testId, e.g., "level-3"
+    value: {
+      testId: string;
+      questions: any[]; // An array of question objects
+    };
+    // No indexes are needed for this simple store
   };
 }
 
@@ -26,31 +43,38 @@ interface ConnectEdDBSchema extends DBSchema {
 let dbInstance: IDBPDatabase<ConnectEdDBSchema> | null = null;
 
 async function getDb(): Promise<IDBPDatabase<ConnectEdDBSchema>> {
-  // If we have an instance, we assume it's good and return it.
-  // The event listener below will handle cases where it closes.
   if (dbInstance) {
     return dbInstance;
   }
 
-  console.log("No active DB instance found. Opening new connection...");
+  console.log("Opening new IndexedDB connection...");
   dbInstance = await openDB<ConnectEdDBSchema>(DB_NAME, DB_VERSION, {
-    upgrade(db) {
-      const store = db.createObjectStore(QUESTIONS_STORE, {
-        keyPath: 'key',
-        autoIncrement: true,
-      });
-      store.createIndex('by_level_and_skill', ['levelId', 'skillId']);
+    // The 'upgrade' function ONLY runs if the DB_VERSION is higher than the one
+    // the browser currently has stored.
+    upgrade(db, oldVersion) {
+      console.log(`Upgrading database from version ${oldVersion} to ${DB_VERSION}`);
+      
+      // Check if the questions store already exists before creating it
+      if (!db.objectStoreNames.contains(QUESTIONS_STORE)) {
+        const questionStore = db.createObjectStore(QUESTIONS_STORE, {
+          keyPath: 'key',
+          autoIncrement: true,
+        });
+        questionStore.createIndex('by_level_and_skill', ['levelId', 'skillId']);
+      }
+
+      // --- 3. CREATE THE NEW OBJECT STORE ---
+      // We check if the new store needs to be created.
+      if (!db.objectStoreNames.contains(PLACEMENT_TESTS_STORE)) {
+        // The key for this store will be the 'testId' property of the objects we store.
+        db.createObjectStore(PLACEMENT_TESTS_STORE, { keyPath: 'testId' });
+        console.log(`Object store '${PLACEMENT_TESTS_STORE}' created.`);
+      }
     },
   });
 
-  // --- THIS IS THE FIX ---
-  // The underlying IDBDatabase connection can be closed by the browser
-  // (especially during development with HMR). We listen for that event.
   dbInstance.addEventListener('close', () => {
-    // When the connection closes, we nullify our singleton instance.
-    // This forces getDb() to create a brand new, fresh connection
-    // the next time it's called.
-    console.warn('Database connection closed unexpectedly. Nullifying instance.');
+    console.warn('Database connection closed. Nullifying instance.');
     dbInstance = null;
   });
 
@@ -115,4 +139,24 @@ export async function countBankedQuestionsForLevel(levelId: string): Promise<num
     const db = await getDb();
     const range = IDBKeyRange.bound([levelId, ''], [levelId, '\uffff']);
     return db.countFromIndex(QUESTIONS_STORE, 'by_level_and_skill', range);
+}
+
+export async function savePlacementTest(testId: string, questions: any[]) {
+  const db = await getDb();
+  // We use our constant to refer to the store name
+  const tx = db.transaction(PLACEMENT_TESTS_STORE, 'readwrite');
+  await tx.store.put({ testId, questions }); // 'put' will add or update the record
+  await tx.done;
+  console.log(`Successfully saved placement test '${testId}' to IndexedDB.`);
+}
+
+/**
+ * Retrieves a saved placement test from IndexedDB.
+ * @param testId - The ID of the test to retrieve.
+ * @returns The array of questions, or undefined if not found.
+ */
+export async function getPlacementTest(testId: string): Promise<any[] | undefined> {
+  const db = await getDb();
+  const test = await db.get(PLACEMENT_TESTS_STORE, testId);
+  return test?.questions;
 }
