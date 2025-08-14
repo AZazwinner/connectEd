@@ -6,6 +6,11 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './index.css';
 
+// --- ADD THESE TWO LINES FOR DEBUGGING ---
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
+alert(`VITE_API_BASE_URL is: ${apiUrl}`);
+// --- END OF DEBUGGING LINES ---
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
