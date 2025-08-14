@@ -1,0 +1,172 @@
+/* src/components/LearningPath.css */
+
+/* --- Warm and Calm Accent Palette --- */
+:root {
+  --math-bg: #eef7e8;
+  --trivia-bg: #f4eefc;
+  --explore-bg: #eaf3fc;
+  --border-color: #e5e7eb;
+}
+
+/* --- Main Learning Path Card --- */
+.learning-path {
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  min-width: 0;
+}
+
+/* --- Header within the card --- */
+.path-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1.5rem;
+}
+
+.path-icon {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.learning-path[data-type="math"] .path-icon { background-color: var(--math-bg); }
+.learning-path[data-type="trivia"] .path-icon { background-color: var(--trivia-bg); }
+.learning-path[data-type="explore"] .path-icon { background-color: var(--explore-bg); }
+
+.path-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 0.25rem 0;
+}
+
+.path-description {
+  font-size: 1rem;
+  color: #4b5568;
+  margin: 0;
+}
+
+
+/* --- THE CORRECTED LAYOUT LOGIC --- */
+
+/* 1. The content area is a simple block element. NO FLEXBOX. */
+/* This allows the parent component to resize correctly. */
+.path-content {
+  padding-left: calc(60px + 1.5rem); /* Aligns with text on desktop */
+}
+
+/* 2. The scroller itself is the ONLY element that needs display: flex. */
+/* This creates the row of cards and enables scrolling. */
+.level-scroller {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto; /* THIS IS THE KEY */
+  
+  /* Add some padding for spacing and to hide the scrollbar */
+  padding: 1rem 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.level-scroller::-webkit-scrollbar { display: none; }
+
+
+/* --- Individual Level Card (Unchanged) --- */
+.level-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+.level-card {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  flex-shrink: 0;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.level-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
+}
+.level-card-image {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 0.75rem;
+}
+.level-card-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #374151;
+}
+.new-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #3b82f6;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: bold;
+  padding: 3px 7px;
+  border-radius: 99px;
+  text-transform: uppercase;
+}
+
+/* --- Trivia Configurator (Unchanged) --- */
+/* ... trivia styles ... */
+
+
+/* --- Mobile Styles --- */
+@media (max-width: 768px) {
+  .learning-path { padding: 1.5rem; }
+  .path-content { padding-left: 0; }
+  .path-header {
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+      gap: 1rem;
+  }
+  .trivia-config-container {
+      flex-direction: column;
+      align-items: stretch;
+  }
+}
+
+.level-card-link.locked .level-card {
+  background-color: #f1f5f9; /* A duller, gray background */
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.level-card-link.locked:hover .level-card {
+  transform: none; /* Disable the hover-lift effect */
+  box-shadow: none;
+}
+
+.level-card-link.locked .level-card-image {
+  filter: grayscale(100%); /* Make the image black and white */
+}
+
+.lock-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  color: rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}

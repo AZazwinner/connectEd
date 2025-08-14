@@ -9,14 +9,6 @@
 
   padding: 6rem 2rem; /* A little more padding can look nice */
 
-  /*
-    THIS IS THE KEY CHANGE.
-    - We set a MINIMUM height of 90vh. This means on a normal screen, it will 
-      feel full-height.
-    - Crucially, it is NOT a fixed 'height'. This allows the section to shrink
-      if its content is smaller (when zoomed out), or grow if its content
-      is larger (on a narrow screen).
-  */
   min-height: 40vh; 
 }
 

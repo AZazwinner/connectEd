@@ -1,7 +1,6 @@
 /* src/sections/Hero.css */
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 
-
 .hero-section {
   height: 100vh;
   box-sizing: border-box;
@@ -82,7 +81,6 @@
 .hero-content .fade-in-up:nth-child(1) {
   animation-delay: 0.2s;
 }
-/* The subtitle is the second */
 .hero-content .fade-in-up:nth-child(2) {
   animation-delay: 0.4s;
 }
@@ -115,7 +113,7 @@
 
 /* ---- Subtitle and Buttons (Mostly unchanged) ---- */
 .hero-subtitle {
-  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  font-size: clamp(1rem, 1.75vw, 1.25rem);
   font-weight: 400;
   max-width: 40rem;
   margin: 0 auto 2.5rem auto;
@@ -142,7 +140,7 @@
   
   /* Initial State */
   color: #ffffff !important;
-  background-color: rgba(30, 30, 50, 0.5); /* Slightly darker initial state */
+  background-color: rgba(47, 47, 66, 0.13); /* Slightly darker initial state */
   overflow: hidden; /* Important: Hides the gradient that is outside the border */
 }
 

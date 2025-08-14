@@ -1,44 +1,34 @@
-// src/sections/Hero.tsx
-import React, { useEffect, useRef } from 'react';
+import React from 'react'; // Removed useEffect and useRef, as they are no longer needed
+import { Link } from 'react-router-dom';
 import './Hero.css';
 
 const Hero: React.FC = () => {
-  // Create refs for the buttons to attach event listeners directly
-  const getStartedRef = useRef<HTMLAnchorElement>(null);
-  const learnMoreRef = useRef<HTMLAnchorElement>(null);
 
-  useEffect(() => {
-    const buttons = [getStartedRef.current, learnMoreRef.current];
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const target = e.currentTarget as HTMLElement;
-      if (target) {
-        const rect = target.getBoundingClientRect();
-        // Calculate mouse position relative to the button
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        // Set CSS custom properties for the gradient position
-        target.style.setProperty('--mouse-x', `${x}px`);
-        target.style.setProperty('--mouse-y', `${y}px`);
-      }
-    };
-
-    buttons.forEach(button => {
-      if (button) {
-        button.addEventListener('mousemove', handleMouseMove);
-      }
-    });
-
-    // Cleanup function to remove event listeners
-    return () => {
-      buttons.forEach(button => {
-        if (button) {
-          button.removeEventListener('mousemove', handleMouseMove);
-        }
+  // This function handles the smooth scrolling for the "Learn More" button
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    e.preventDefault();
+    const href = e.currentTarget.getAttribute('href');
+    if (!href) return;
+    const targetElement = document.querySelector(href);
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
       });
-    };
-  }, []); // Empty dependency array means this runs once on mount
+    }
+  };
+
+  // --- NEW, SIMPLIFIED EVENT HANDLER ---
+  // This single function will be attached directly to both buttons.
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const target = e.currentTarget;
+    const rect = target.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    target.style.setProperty('--mouse-x', `${x}px`);
+    target.style.setProperty('--mouse-y', `${y}px`);
+  };
+
   return (
     <section className="hero-section" id="hero">
       <div className="hero-content">
@@ -58,10 +48,22 @@ const Hero: React.FC = () => {
 
         <div className="fade-in-up">
             <div className="hero-button-group">
-                <a href="#get-started" className="hero-button" ref={getStartedRef}>
+                {/* --- FIX is applied here --- */}
+                <Link 
+                  to="/dashboard" 
+                  className="hero-button primary"
+                  onMouseMove={handleMouseMove} // We add the event handler directly
+                >
                     <span>Get Started</span>
-                </a>
-                <a href="#learn-more" className="hero-button" ref={learnMoreRef}>
+                </Link>
+                
+                {/* --- FIX is also applied here for consistency --- */}
+                <a 
+                  href="#how-it-works" 
+                  className="hero-button" 
+                  onClick={handleScroll}
+                  onMouseMove={handleMouseMove} // We add the event handler directly
+                >
                     <span>Learn More</span>
                 </a>
             </div>

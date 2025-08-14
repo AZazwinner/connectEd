@@ -1,24 +1,21 @@
 // src/App.tsx
-
-// Import all the static sections
-import Hero from './sections/Hero';
-import HowItWorks from './sections/HowItWorks';
-import Philosophy from './sections/Philosophy';
-import Mission from './sections/Mission';
-import CallToAction from './sections/CallToAction';
-
-// Global styles
+import { Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
+import Dashboard from './pages/Dashboard.tsx';
+import LevelDetailPage from './pages/LevelDetailPage';
+import WorkspacePage from './pages/WorkspacePage';
+import PlacementTestPage from './pages/PlacementTestPage';
 import './App.css';
 
 function App() {
   return (
-    <main>
-      <Hero />
-      <HowItWorks />
-      <Philosophy />
-      <Mission />
-      <CallToAction />
-    </main>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/math/:levelId" element={<LevelDetailPage />} />
+      <Route path="/workspace/:levelId/:skillId" element={<WorkspacePage />} />
+      <Route path="/placement-test/:targetLevelId" element={<PlacementTestPage />} />
+    </Routes>
   );
 }
 

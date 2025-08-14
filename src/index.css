@@ -16,6 +16,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100%;
 }
 
 /* 2. Override variables for light mode */
@@ -28,12 +29,21 @@
   }
 }
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 /* 3. Global layout and element styling */
 html, body, #root {
   height: 100%;
   margin: 0;
   overflow-x: hidden;
 }
+
 
 body {
   color: var(--c-text);
@@ -77,4 +87,17 @@ button:hover {
 }
 button:focus-visible { /* Simplified focus style */
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+body.dashboard-bg {
+  /* Use whichever background style you prefer */
+  
+  /* For the subtle gradient: */
+  background: linear-gradient(to bottom, #fffdfa, #ffeecf);
+
+  /* Or for the warm neutral: */
+  /* background-color: #FDF8F0; */
+
+  /* This is important for preventing a white flash on long pages */
+  background-attachment: fixed;
 }

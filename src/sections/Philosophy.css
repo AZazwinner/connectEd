@@ -82,6 +82,53 @@
   opacity: 1;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* --- Keyframes for the "Fade In Up" (for the cards) --- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- The class that triggers the animations --- */
+.animated-item {
+  /* Set initial state for all animated items */
+  opacity: 0;
+  animation-fill-mode: forwards;
+  animation-duration: 0.8s;
+  animation-timing-function: ease-out;
+}
+
+/* --- Specific animation assignments --- */
+
+/* The title will just fade in */
+.section-title.animated-item {
+  animation-name: fadeIn;
+  animation-delay: 0.2s;
+}
+
+/* The cards will fade in from the bottom up */
+.path-card.animated-item {
+  animation-name: fadeInUp;
+}
+
+/* Stagger the card animations */
+.paths-container .path-card:nth-child(1).animated-item {
+  animation-delay: 0.4s;
+}
+.paths-container .path-card:nth-child(2).animated-item {
+  animation-delay: 0.6s;
+}
+
 
 /* 
 ===========================================================

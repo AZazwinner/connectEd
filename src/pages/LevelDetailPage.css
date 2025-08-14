@@ -1,0 +1,184 @@
+/* src/pages/LevelDetailPage.css */
+
+/* --- Color & Font Palette --- */
+:root {
+  --page-bg: #f8f9fa;            /* Soft, off-white background */
+  --card-bg: #ffffff;            /* Clean white for cards */
+  --primary-text: #1f2937;       /* Dark, near-black for titles */
+  --secondary-text: #4b5568;     /* Softer gray for descriptions */
+  --accent-color: #3b82f6;       /* A calm, modern blue for links and highlights */
+  --accent-hover: #2563eb;       /* A slightly darker blue for hover effects */
+  --border-color: #e5e7eb;       /* A very light gray for subtle borders */
+}
+
+/* --- Main Page Container --- */
+.level-detail-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--page-bg);
+  color: var(--secondary-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  padding: 3rem 0; /* More vertical whitespace */
+}
+
+/* --- Core Two-Column Layout --- */
+.level-detail-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* --- Shared Card Styles --- */
+/* We apply these base styles to both the sidebar and the skill cards for consistency */
+.level-info-sidebar,
+.skill-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px; /* Softer, larger radius */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Softer, more subtle shadow */
+}
+
+.skill-card.mastered {
+  border-color: #28a745; /* A nice green border */
+  position: relative;
+  overflow: hidden; /* Needed for the checkmark pseudo-element */
+}
+
+.skill-card.mastered::after {
+  content: '✔'; /* The checkmark character */
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.5rem;
+  color: #28a745;
+  opacity: 0.8;
+}
+
+.skill-card.mastered:hover {
+  /* Keep the hover effect, but maybe less pronounced */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* --- DESKTOP: Sticky Left Sidebar --- */
+.level-info-sidebar {
+  flex: 0 0 320px;
+  position: sticky;
+  top: 3rem; /* Adjust stickiness point to match new padding */
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.level-info-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  display: block;
+  margin-bottom: 1.5rem;
+}
+
+.level-info-title {
+  font-size: 1.75rem; /* Slightly smaller for a calmer feel */
+  color: var(--primary-text);
+  margin: 0 0 0.5rem 0;
+}
+
+.level-info-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.back-link {
+  display: block;
+  color: var(--accent-color);
+  text-decoration: none;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+.back-link:hover {
+  color: var(--accent-hover);
+}
+
+
+/* --- DESKTOP: Scrollable Right Skill List --- */
+.skill-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.skill-card {
+  padding: 1.5rem 2rem;
+  text-decoration: none;
+  color: var(--secondary-text);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-color); /* Start with a base border */
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.skill-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
+  border-color: var(--accent-color); /* Highlight with accent color on hover */
+}
+
+.skill-card h3 {
+  color: var(--primary-text);
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+
+.skill-card p {
+  flex-grow: 1;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.start-practice-btn {
+  display: inline-block;
+  background-color: var(--accent-color);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+  align-self: flex-start;
+  transition: background-color 0.2s ease;
+}
+
+.skill-card:hover .start-practice-btn {
+  background-color: var(--accent-hover);
+}
+
+
+/* --- MOBILE STYLES (for screens <= 992px) --- */
+@media (max-width: 992px) {
+  .level-detail-layout {
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  /* Make the sidebar a seamless header on mobile */
+  .level-info-sidebar {
+    position: static;
+    width: 100%;
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    text-align: center;
+  }
+
+  .level-info-icon {
+    margin: 0 auto 1.5rem auto;
+  }
+
+  .skill-grid {
+    width: 100%;
+  }
+}

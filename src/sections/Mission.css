@@ -76,7 +76,67 @@
   color: #4b5563;
 }
 
+/* --- Keyframes Definitions --- */
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Set the initial hidden state for the items --- */
+.mission-image-container, .mission-text-content {
+  opacity: 0;
+  transition: opacity 0.8s ease-out;
+}
+
+/* --- Base class to trigger animations --- */
+.animated-item {
+  animation-fill-mode: forwards;
+  animation-duration: 0.8s;
+  animation-timing-function: ease-out;
+}
+
+/* 
+===========================================================
+  APPLYING THE ANIMATIONS (Desktop-First)
+===========================================================
+*/
+
+/* Default (Desktop) Animations */
+.mission-image-container.animated-item {
+  animation-name: fadeInRight;
+  animation-delay: 0.2s;
+}
+.mission-text-content.animated-item {
+  animation-name: fadeInRight;
+  animation-delay: 0.4s;
+}
+
 @media (max-width: 1024px) {
+
+
+  /* The image fades in from the bottom up */
+  .mission-image-container.animated-item {
+    animation-name: fadeInUp;
+    animation-delay: 0.2s; /* Image appears first */
+  }
+
+  /* The text fades in from the top down */
+  .mission-text-content.animated-item {
+    animation-name: fadeInDown;
+    animation-delay: 0.4s; /* Text appears second */
+  }
   /* This part is the same: stack the main items vertically */
   .mission-wrapper {
     flex-direction: column;

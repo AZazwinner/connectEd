@@ -1,7 +1,21 @@
+// frontend/vite.config.ts
+
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  
+  // --- ADD THIS SERVER CONFIGURATION ---
+  server: {
+    proxy: {
+      // Any request starting with /api will be proxied
+      '/api': {
+        // The address of your Python backend
+        target: 'http://127.0.0.1:8000', // Or whatever port it's on
+        changeOrigin: true,
+      },
+    }
+  }
 })
