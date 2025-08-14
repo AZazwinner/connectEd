@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { unlockLevelsUpTo } from '../lib/progress';
-import Modal from '../components/Modal'; // <-- 1. Import the Modal
-import '../components/Modal.css'; // <-- Import CSS for our modal's button styles
-import './WorkspacePage.css'; // Reuse the workspace styles for the test layout
+import Modal from '../components/Modal';
+import '../components/Modal.css';
+import './WorkspacePage.css';
+import api from '../lib/api'; // <-- 1. Import our new central API helper
 
-// Interface for our modal's state
+// Interface for our modal's state (Unchanged)
 interface ResultInfo {
   isOpen: boolean;
   title: string;
   message: string;
 }
 
-// Interface for a question object from the API
+// Interface for a question object from the API (Unchanged)
 interface Question {
   questionId: string;
   skillId: string;
@@ -31,27 +32,30 @@ const PlacementTestPage: React.FC = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-
-  // 2. Add state to control the results modal
   const [resultModal, setResultModal] = useState<ResultInfo>({
     isOpen: false,
     title: '',
     message: ''
   });
 
-  // Effect to fetch placement test questions when the component mounts
+  // Effect to fetch placement test questions. This is where we make the fix.
   useEffect(() => {
     const fetchTest = async () => {
       if (!targetLevelId) return;
       setIsLoading(true);
       try {
-        const response = await fetch(`/api/math/placement-test/${targetLevelId}`);
-        if (!response.ok) throw new Error('Failed to fetch placement test.');
-        const data: Question[] = await response.json();
+        // 2. Use the 'api' helper instead of fetch.
+        // The URL is relative to the baseURL in api.ts.
+        const response = await api.get(`/math/placement-test/${targetLevelId}`);
+        
+        // 3. Get the data from response.data (axios automatically parses JSON).
+        const data: Question[] = response.data;
         setQuestions(data.length > 0 ? data : []);
+
       } catch (error) {
+        // The catch block now automatically handles network or 4xx/5xx errors from axios.
         console.error("Placement test fetch error:", error);
-        setQuestions([]); // Ensure questions are empty on error
+        setQuestions([]); 
       } finally {
         setIsLoading(false);
       }
@@ -59,9 +63,10 @@ const PlacementTestPage: React.FC = () => {
     fetchTest();
   }, [targetLevelId]);
 
-  // This function is called when the session is over
+  // --- All the functions and JSX below this line are unchanged and correct ---
+
   const handleSessionEnd = (finalScore: number) => {
-    const finalPercent = (finalScore / questions.length) * 100;
+    const finalPercent = questions.length > 0 ? (finalScore / questions.length) * 100 : 0;
     const passed = finalPercent >= 80;
 
     let title = '';
@@ -76,11 +81,9 @@ const PlacementTestPage: React.FC = () => {
       message = `You scored ${Math.round(finalPercent)}%. To unlock this level, you'll need to go back and master the skills in the previous levels. You can do it!`;
     }
 
-    // 3. Instead of window.alert, we set state to show our modal
     setResultModal({ isOpen: true, title, message });
   };
   
-  // This is called when the user clicks an answer
   const handleAnswerSubmit = (isCorrect: boolean) => {
     const newScore = isCorrect ? score + 1 : score;
     if (isCorrect) {
@@ -95,13 +98,10 @@ const PlacementTestPage: React.FC = () => {
     }
   };
 
-  // This is called when the modal's close button or backdrop is clicked
   const handleCloseResultModal = () => {
     setResultModal({ isOpen: false, title: '', message: '' });
-    navigate('/dashboard'); // Navigate back to the dashboard after closing the modal
+    navigate('/dashboard');
   };
-
-  // --- Render Logic ---
 
   if (isLoading) {
     return <div className="workspace-container"><div className="loading-spinner"></div></div>;
@@ -139,7 +139,7 @@ const PlacementTestPage: React.FC = () => {
             {currentQuestion.answerOptions.map((option, index) => (
               <button
                 key={index}
-                className="answer-btn" // Simplified button for immediate feedback is not needed in a test
+                className="answer-btn"
                 onClick={() => handleAnswerSubmit(option === currentQuestion.correctAnswer)}
               >
                 {option}
@@ -148,8 +148,7 @@ const PlacementTestPage: React.FC = () => {
           </div>
         </main>
       </div>
-
-      {/* 4. Add the Modal component to the end of your JSX */}
+      
       <Modal
         isOpen={resultModal.isOpen}
         onClose={handleCloseResultModal}
