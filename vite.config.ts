@@ -13,7 +13,7 @@ export default defineConfig({
       // Any request starting with /api will be proxied
       '/api': {
         // The address of your Python backend
-        target: 'http://127.0.0.1:8000', // Or whatever port it's on
+        target: 'https://connected-backend-hssr.onrender.com', // Or whatever port it's on
         changeOrigin: true,
       },
     }
