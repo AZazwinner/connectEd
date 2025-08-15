@@ -80,6 +80,7 @@
 .level-card-link {
   text-decoration: none;
   color: inherit;
+  cursor: pointer;
 }
 .level-card {
   position: relative;
@@ -148,7 +149,7 @@
 
 .level-card-link.locked .level-card {
   background-color: #f1f5f9; /* A duller, gray background */
-  cursor: not-allowed;
+  
   opacity: 0.7;
 }
 
