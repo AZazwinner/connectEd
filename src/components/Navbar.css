@@ -1,0 +1,66 @@
+.main-navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.navbar-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  text-decoration: none;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #4b5568;
+  font-weight: 500;
+  padding-bottom: 0.25rem;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #1f2937;
+}
+
+.nav-link.active {
+  color: #3b82f6;
+  border-bottom-color: #3b82f6;
+}
+
+/* --- Mobile Styles --- */
+@media (max-width: 768px) {
+  .navbar-brand {
+    /* As requested, the brand name disappears on mobile */
+    display: none;
+  }
+  
+  .navbar-content {
+    /* This will center the remaining links ('Home', 'Dashboard') */
+    justify-content: center;
+  }
+
+  .main-navbar {
+    /* Reduce padding on smaller screens to save vertical space */
+    padding: 0.75rem 1rem;
+  }
+}

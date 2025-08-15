@@ -4,6 +4,7 @@ import { getQuestionsForLevel } from '../lib/database';
 import { MATH_CURRICULUM } from '../lib/curriculum';
 import { saveSkillAttempt } from '../lib/progress';
 import Modal from '../components/Modal';
+import { recordMathCorrectAnswer, recordMathCourseCompletion } from '../lib/userProfile';
 import '../components/Modal.css';
 import './WorkspacePage.css';
 
@@ -79,6 +80,14 @@ const WorkspacePage: React.FC = () => {
     if (wasCorrect) {
       setAttemptState('answered_correct');
       setCorrectAnswersCount(prev => prev + 1);
+
+      // --- THIS IS THE FIX ---
+      if (levelId) {
+        const levelNumber = parseInt(levelId.split('-')[1], 10);
+        if (!isNaN(levelNumber)) {
+          recordMathCorrectAnswer(levelNumber);
+        }
+      }
     } else {
       setAttemptState('answered_incorrect');
     }
@@ -101,14 +110,25 @@ const WorkspacePage: React.FC = () => {
       setUserAnswer(null);
       setIsAnswerCorrect(null); // <-- **FIX #3:** This is needed to reset the UI before showing the next question.
     } else {
-      // This scoring logic is already correct.
       const finalScore = (questionBank.length > 0) ? (correctAnswersCount / questionBank.length) : 0;
+      const masteryAchieved = finalScore >= 0.8;
       
       if (skillId) {
         saveSkillAttempt(skillId, finalScore);
       }
 
-      const masteryAchieved = finalScore >= 0.8;
+      // --- THIS IS THE UPDATED LOGIC ---
+      if (masteryAchieved && levelId) {
+        // 1. Parse the level number from the levelId string (e.g., "level-3" -> 3)
+        const levelNumber = parseInt(levelId.split('-')[1], 10);
+        
+        // 2. Check if parsing was successful before calling the function
+        if (!isNaN(levelNumber)) {
+          console.log(`Mastery achieved! Recording completion for Math Level ${levelNumber}...`);
+          // 3. Pass both the score AND the level number to the function
+          recordMathCourseCompletion(finalScore);
+        }
+      }
       
       setResultModal({
         isOpen: true,

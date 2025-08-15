@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 import Modal from '../components/Modal';
+import { recordTriviaCorrectAnswer } from '../lib/userProfile';
 
 // We can reuse the styles from the math workspace for a consistent look!
 import './WorkspacePage.css';
@@ -13,6 +14,7 @@ interface TriviaQuestion {
   question: string;
   correctAnswer: string;
   answerOptions: string[];
+  difficulty: 'easy' | 'medium' | 'hard'; // Add difficulty
 }
 
 const TriviaWorkspace: React.FC = () => {
@@ -86,10 +88,14 @@ const TriviaWorkspace: React.FC = () => {
     const wasCorrect = selectedOption === correctAnswer;
 
     setUserAnswer(selectedOption);
-    setIsAnswerCorrect(wasCorrect); // <-- Set the correctness state
+    setIsAnswerCorrect(wasCorrect);
 
     if (wasCorrect) {
       setScore(prevScore => prevScore + 1);
+      
+      console.log(`Correct answer! Recording for difficulty: ${currentQuestion.difficulty}`);
+      // 3. Pass the question's difficulty to the recording function
+      recordTriviaCorrectAnswer(currentQuestion.difficulty);
     }
   };
 

@@ -30,11 +30,12 @@
 }
 
 *, *::before, *::after {
-  box-sizing: border-box;
+  box-sizing: inherit;
 }
 
 html {
   scroll-behavior: smooth;
+  box-sizing: border-box;
 }
 
 /* 3. Global layout and element styling */
@@ -101,3 +102,13 @@ body.dashboard-bg {
   /* This is important for preventing a white flash on long pages */
   background-attachment: fixed;
 }
+
+body.trivia-page-bg {
+  /* You can choose whichever gradient you prefer, this is the one from your example */
+  background: linear-gradient(to bottom, #fffdfa, #ffeecf);
+  
+  /* This is critical. It prevents the gradient from scrolling with the content,
+     making the background feel fixed and stable. */
+  background-attachment: fixed;
+}
+

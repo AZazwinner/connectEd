@@ -3,7 +3,9 @@
 import React, { useEffect } from 'react';
 import LearningPath from '../components/LearningPath';
 import { dashboardData } from '../dashboardData';
+
 import './Dashboard.css';
+import { updateUserStreak } from '../lib/userProfile';
 
 const Dashboard: React.FC = () => {
   useEffect(() => {
@@ -16,6 +18,12 @@ const Dashboard: React.FC = () => {
       document.body.classList.remove('dashboard-bg');
     };
   }, []);
+
+  useEffect(() => {
+    // When the dashboard loads, check and update the user's streak
+    updateUserStreak();
+  }, []);
+  
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">

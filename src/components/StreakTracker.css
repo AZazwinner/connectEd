@@ -1,0 +1,33 @@
+.stat-card { /* Base card style */
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.streak-header h2 { margin: 0; text-align: center; color: #374151; }
+.streak-display { display: flex; justify-content: center; align-items: center; margin: 1rem 0; }
+.streak-number { font-size: 4rem; font-weight: 700; color: #1f2937; }
+.streak-emoji { font-size: 3rem; margin-left: 0.5rem; }
+.streak-subtext { text-align: center; color: #6b7280; margin: 0; }
+.week-flames { display: flex; justify-content: space-around; margin-top: 1.5rem; }
+.flame-day {
+  font-size: 1.5rem;
+  padding: 0.5rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  filter: grayscale(100%);
+  opacity: 0.4;
+  transition: all 0.3s ease;
+}
+.flame-day.lit {
+  filter: grayscale(0%);
+  opacity: 1;
+  border-color: #f59e0b;
+  background-color: #fffbeb;
+}

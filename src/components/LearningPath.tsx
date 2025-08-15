@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import type { LearningPathData, Level } from '../dashboardData';
 import api from '../lib/api'; // <-- 1. Import the API helper
 
@@ -12,6 +12,8 @@ import Modal from './Modal';
 // Styles
 import './Modal.css'; 
 import './LearningPath.css';
+
+import triviaIcon from '../assets/trivia/trivia.png'; 
 
 // --- CHILD COMPONENT: LevelCard (Unchanged) ---
 interface LevelCardProps {
@@ -33,16 +35,6 @@ const LevelCard: React.FC<LevelCardProps> = ({ level, isLocked, isSyncing, onCli
     </div>
   );
 };
-
-// --- CHILD COMPONENT: TriviaConfigurator (Unchanged) ---
-const TriviaConfigurator: React.FC = () => (
-  <div className="trivia-config-container">
-    <Link to="/trivia" className="start-trivia-btn-link">
-      <button className="start-trivia-btn">Start Trivia Challenge</button>
-    </Link>
-  </div>
-);
-
 
 // --- PARENT COMPONENT: LearningPath ---
 const LearningPath: React.FC<{ path: LearningPathData }> = ({ path }) => {
@@ -143,7 +135,22 @@ const LearningPath: React.FC<{ path: LearningPathData }> = ({ path }) => {
       </div>
       <div className="path-content">
         {path.type === 'trivia' ? (
-          <TriviaConfigurator />
+          <div className="level-scroller single-item">
+            <LevelCard 
+              key="trivia-start"
+              // --- THIS IS THE CORRECTED OBJECT ---
+              // The 'description' property has been removed to match the 'Level' type.
+              level={{
+                title: 'Start Trivia Challenge',
+                image: triviaIcon,
+                path: '/trivia',
+                isNew: false
+              }}
+              isLocked={false}
+              isSyncing={false}
+              onClick={() => navigate('/trivia')}
+            />
+          </div>
         ) : (
           <div className="level-scroller" ref={scrollerRef}>
             {path.levels?.map(level => {

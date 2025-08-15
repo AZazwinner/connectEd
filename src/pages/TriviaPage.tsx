@@ -15,11 +15,18 @@ const TriviaPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   // State for user's selections
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedDifficulty, setSelectedDifficulty] = useState('medium');
   const [selectedAmount, setSelectedAmount] = useState(10);
 
-  // Fetch categories from the backend when the component loads
+  useEffect(() => {
+    document.body.classList.add('trivia-page-bg');
+
+    return () => {
+      document.body.classList.remove('trivia-page-bg');
+    };
+  }, []);
+  
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -27,7 +34,6 @@ const TriviaPage: React.FC = () => {
         setCategories(response.data);
       } catch (err) {
         setError('Could not load trivia categories. Please try again later.');
-        console.error(err);
       } finally {
         setIsLoading(false);
       }
@@ -36,13 +42,11 @@ const TriviaPage: React.FC = () => {
   }, []);
 
   const handleStartQuiz = () => {
-    // Construct the query string for the workspace page
     const params = new URLSearchParams();
-    if (selectedCategory) params.append('category', selectedCategory);
+    // Only add parameters if they have a value
+    if (selectedCategory) params.append('category', selectedCategory.toString());
     if (selectedDifficulty) params.append('difficulty', selectedDifficulty);
     params.append('amount', selectedAmount.toString());
-
-    // Navigate to the workspace with the selected options
     navigate(`/trivia/workspace?${params.toString()}`);
   };
 
@@ -62,33 +66,62 @@ const TriviaPage: React.FC = () => {
         {error && <p className="error-message">{error}</p>}
 
         <main className="trivia-form">
+          {/* --- 1. Difficulty Segmented Control --- */}
           <div className="form-group">
-            <label htmlFor="category">Category</label>
-            <select id="category" value={selectedCategory} onChange={e => setSelectedCategory(e.target.value)}>
-              <option value="">Any Category</option>
-              {categories.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
-              ))}
-            </select>
+            <label>Difficulty</label>
+            <div className="difficulty-selector">
+              <button 
+                className={selectedDifficulty === 'easy' ? 'selected' : ''}
+                onClick={() => setSelectedDifficulty('easy')}
+              >Easy</button>
+              <button 
+                className={selectedDifficulty === 'medium' ? 'selected' : ''}
+                onClick={() => setSelectedDifficulty('medium')}
+              >Medium</button>
+              <button 
+                className={selectedDifficulty === 'hard' ? 'selected' : ''}
+                onClick={() => setSelectedDifficulty('hard')}
+              >Hard</button>
+            </div>
           </div>
+
+          {/* --- 2. Number of Questions Slider --- */}
           <div className="form-group">
-            <label htmlFor="difficulty">Difficulty</label>
-            <select id="difficulty" value={selectedDifficulty} onChange={e => setSelectedDifficulty(e.target.value)}>
-              <option value="easy">Easy</option>
-              <option value="medium">Medium</option>
-              <option value="hard">Hard</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label htmlFor="amount">Number of Questions</label>
+            <label htmlFor="amount">Number of Questions: <span>{selectedAmount}</span></label>
             <input 
-              type="number" 
+              type="range" 
               id="amount" 
+              className="amount-slider"
               value={selectedAmount} 
               onChange={e => setSelectedAmount(parseInt(e.target.value, 10))}
               min="5" 
-              max="30" 
+              max="50"
+              step="5"
             />
+          </div>
+          
+          {/* --- 3. Category Grid --- */}
+          <div className="form-group">
+             <label>Category</label>
+             <div className="category-grid">
+               {/* "Any" Category Button */}
+               <button 
+                  className={`category-card ${selectedCategory === null ? 'selected' : ''}`}
+                  onClick={() => setSelectedCategory(null)}
+                >
+                  Any Category
+               </button>
+               {/* Map over the fetched categories */}
+               {categories.map(cat => (
+                 <button 
+                   key={cat.id} 
+                   className={`category-card ${selectedCategory === cat.id ? 'selected' : ''}`}
+                   onClick={() => setSelectedCategory(cat.id)}
+                 >
+                   {cat.name.replace("Entertainment: ", "").replace("Science: ", "")}
+                 </button>
+               ))}
+             </div>
           </div>
 
           <button className="start-quiz-button" onClick={handleStartQuiz}>
